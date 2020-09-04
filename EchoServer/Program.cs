@@ -12,6 +12,7 @@ namespace EchoServer
             Server server = new Server();
 
             server.Start();
+            Console.ReadLine();
         }
         
     }

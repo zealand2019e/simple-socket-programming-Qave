@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace EchoServer
@@ -16,19 +17,20 @@ namespace EchoServer
 
             TcpClient socket = ServerListen.AcceptTcpClient();
 
-            using (socket)
-            {
-                NetworkStream ns = socket.GetStream();
+            DoClient(socket);
 
-                StreamReader streamReader = new StreamReader(ns);
-                StreamWriter streamWriter = new StreamWriter(ns);
+        }
+        public void DoClient(TcpClient socket)
+        {
+            NetworkStream ns = socket.GetStream();
 
-                string line = streamReader.ReadLine();
+            StreamReader streamReader = new StreamReader(ns);
+            StreamWriter streamWriter = new StreamWriter(ns);
 
-                streamWriter.WriteLine(line);
-                streamWriter.Flush();
+            string line = streamReader.ReadLine();
 
-            }
+            streamWriter.WriteLine(line);
+            streamWriter.Flush();
         }
     }
 }
