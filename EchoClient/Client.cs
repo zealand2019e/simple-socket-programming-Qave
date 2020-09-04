@@ -15,16 +15,13 @@ namespace EchoClient
                 using (TcpClient socket = new TcpClient("localhost", 7))
                 {
                     NetworkStream ns = socket.GetStream();
-
                     StreamReader streamReader = new StreamReader(ns);
                     StreamWriter streamWriter = new StreamWriter(ns);
 
                     while (true)
                     {
-
                         try
                         {
-
                             // Word sent to the server
                             string lineSentToServer = Console.ReadLine();
                             // Send the word to the server
@@ -39,10 +36,8 @@ namespace EchoClient
                         {
                             Console.WriteLine("Connection to the server cannot be made, is it running?");
                             return;
-                        }
-                        
+                        }                    
                     }
-
                 }
             }
             catch (SocketException)
