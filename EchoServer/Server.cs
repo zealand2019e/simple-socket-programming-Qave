@@ -17,9 +17,13 @@ namespace EchoServer
 
             TcpClient socket = ServerListen.AcceptTcpClient();
 
-            DoClient(socket);
-
+            using (socket)
+            {
+                DoClient(socket);
+            }
+            Console.ReadKey();
         }
+        public int WordCount { get; set; } = 0;
         public void DoClient(TcpClient socket)
         {
             NetworkStream ns = socket.GetStream();
@@ -27,10 +31,29 @@ namespace EchoServer
             StreamReader streamReader = new StreamReader(ns);
             StreamWriter streamWriter = new StreamWriter(ns);
 
-            string line = streamReader.ReadLine();
+            while (true)
+            {
+                // Word recieved from the client
+                try
+                {
+                    // Word read from the client
+                    string line = streamReader.ReadLine();
 
-            streamWriter.WriteLine(line);
-            streamWriter.Flush();
+                    // Count the words
+                    WordCount += line.Split(' ').Length;
+                    // Write the line that is read from the client
+                    Console.WriteLine(line);
+
+                    streamWriter.WriteLine("Totalt words sent to server: " + WordCount);
+                    streamWriter.Flush();
+
+                }
+                catch (IOException)
+                {
+                    Console.WriteLine("Connection to the client was closed");
+                    return;
+                }
+            }
         }
     }
 }

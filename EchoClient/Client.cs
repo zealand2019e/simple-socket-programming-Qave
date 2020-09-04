@@ -10,25 +10,46 @@ namespace EchoClient
     {
         public void Start()
         {
-
-            using (TcpClient socket = new TcpClient("localhost", 7))
+            try
             {
-                NetworkStream ns = socket.GetStream();
+                using (TcpClient socket = new TcpClient("localhost", 7))
+                {
+                    NetworkStream ns = socket.GetStream();
 
-                StreamReader streamReader = new StreamReader(ns);
-                StreamWriter streamWriter = new StreamWriter(ns);
+                    StreamReader streamReader = new StreamReader(ns);
+                    StreamWriter streamWriter = new StreamWriter(ns);
 
-                streamWriter.WriteLine("Lol");
-                streamWriter.Flush();
+                    while (true)
+                    {
 
+                        try
+                        {
 
-                string line = streamReader.ReadLine();
-                Console.WriteLine(line);
+                            // Word sent to the server
+                            string lineSentToServer = Console.ReadLine();
+                            // Send the word to the server
+                            streamWriter.WriteLine(lineSentToServer);
+                            // flush the streamWriter
+                            streamWriter.Flush();
 
+                            string line = streamReader.ReadLine();
+                            Console.WriteLine(line);
+                        }
+                        catch (IOException)
+                        {
+                            Console.WriteLine("Connection to the server cannot be made, is it running?");
+                            return;
+                        }
+                        
+                    }
 
-            }      
-            
-
+                }
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("No connection could be made to the server.");
+                return;
+            }
         }
     }
 }
