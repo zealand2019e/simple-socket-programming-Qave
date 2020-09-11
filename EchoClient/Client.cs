@@ -8,11 +8,13 @@ namespace EchoClient
 {
     public class Client
     {
+        private string ClientName = "Kasper";
         public void Start()
         {
             try
             {
-                using (TcpClient socket = new TcpClient("localhost", 7))
+                TcpClient socket = new TcpClient("localhost", 7);
+                using (socket)
                 {
                     NetworkStream ns = socket.GetStream();
                     StreamReader streamReader = new StreamReader(ns);
@@ -25,7 +27,7 @@ namespace EchoClient
                             // Word sent to the server
                             string lineSentToServer = Console.ReadLine();
                             // Send the word to the server
-                            streamWriter.WriteLine(lineSentToServer);
+                            streamWriter.WriteLine(ClientName +" said: "+lineSentToServer);
                             // flush the streamWriter
                             streamWriter.Flush();
 

@@ -14,44 +14,47 @@ namespace EchoServer
         {
             TcpListener ServerListen = new TcpListener(IPAddress.Loopback, 7);
             ServerListen.Start();
-
-            TcpClient socket = ServerListen.AcceptTcpClient();
-
-            using (socket)
+            Console.WriteLine("Listening for clients...");
+            while (true)
             {
+                TcpClient socket = ServerListen.AcceptTcpClient();
+                Console.WriteLine("Client found");
+
                 DoClient(socket);
+
             }
-            Console.ReadKey();
         }
         public int WordCount { get; set; } = 0;
         public void DoClient(TcpClient socket)
         {
-            NetworkStream ns = socket.GetStream();
-
-            StreamReader streamReader = new StreamReader(ns);
-            StreamWriter streamWriter = new StreamWriter(ns);
-
-            while (true)
+            using (socket)
             {
-                // Word recieved from the client
-                try
+                NetworkStream ns = socket.GetStream();
+                StreamReader streamReader = new StreamReader(ns);
+                StreamWriter streamWriter = new StreamWriter(ns);
+                while (true)
                 {
-                    // Word read from the client
-                    string line = streamReader.ReadLine();
+                    // Word recieved from the client
+                    try
+                    {
+                        // Word read from the client
+                        string line = streamReader.ReadLine();
 
-                    // Count the words
-                    WordCount += line.Split(' ').Length;
-                    // Write the line that is read from the client
-                    Console.WriteLine(line);
-
-                    streamWriter.WriteLine("Totalt words sent to server: " + WordCount);
-                    streamWriter.Flush();
-
-                }
-                catch (IOException)
-                {
-                    Console.WriteLine("Connection to the client was closed");
-                    return;
+                        // Count the words
+                        if (line != string.Empty)
+                        {
+                            WordCount += line.Split(' ').Length;
+                        }
+                        // Write the line to the server that is read from the client
+                        Console.WriteLine(line);
+                        streamWriter.WriteLine("Total words sent to server: " + WordCount);
+                        streamWriter.Flush();
+                    }
+                    catch (IOException)
+                    {
+                        Console.WriteLine("Client disconnected");
+                        return;
+                    }
                 }
             }
         }
