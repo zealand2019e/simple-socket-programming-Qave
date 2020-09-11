@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EchoServer
 {
@@ -13,6 +14,7 @@ namespace EchoServer
         public void Start()
         {
             TcpListener ServerListen = new TcpListener(IPAddress.Loopback, 7);
+            // start listening for clients on port 7
             ServerListen.Start();
             Console.WriteLine("Listening for clients...");
             while (true)
@@ -20,7 +22,13 @@ namespace EchoServer
                 TcpClient socket = ServerListen.AcceptTcpClient();
                 Console.WriteLine("Client found");
 
-                DoClient(socket);
+                // For every new client, run a new task so they run simultaneously
+                Task.Run(() =>
+                {
+                    // create a temp socket for the new client
+                    TcpClient tempSocket = socket;
+                    DoClient(tempSocket);
+                });
 
             }
         }
@@ -41,7 +49,7 @@ namespace EchoServer
                         string line = streamReader.ReadLine();
 
                         // Count the words
-                        if (line != string.Empty)
+                        if (line != null)
                         {
                             WordCount += line.Split(' ').Length;
                         }
@@ -52,6 +60,7 @@ namespace EchoServer
                     }
                     catch (IOException)
                     {
+                        socket.Dispose();
                         Console.WriteLine("Client disconnected");
                         return;
                     }

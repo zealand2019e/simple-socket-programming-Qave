@@ -27,7 +27,7 @@ namespace EchoClient
                             // Word sent to the server
                             string lineSentToServer = Console.ReadLine();
                             // Send the word to the server
-                            streamWriter.WriteLine(ClientName +" said: "+lineSentToServer);
+                            streamWriter.WriteLine(lineSentToServer);
                             // flush the streamWriter
                             streamWriter.Flush();
 
