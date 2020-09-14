@@ -13,7 +13,7 @@ namespace EchoClient
         {
             try
             {
-                TcpClient socket = new TcpClient("localhost", 7);
+                TcpClient socket = new TcpClient("localhost", 3002);
                 using (socket)
                 {
                     NetworkStream ns = socket.GetStream();
