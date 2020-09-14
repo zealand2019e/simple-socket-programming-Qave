@@ -52,25 +52,23 @@ namespace EchoServer
                     {
                         // Word read from the client
                         string line = streamReader.ReadLine();
+                        // Write the line to the server that is read from the client
                         Console.WriteLine(line);
-
-
-
                         if (line != null)
                         {
                             //WordCount += line.Split(' ').Length;
-                            if (CanCalculate(line))
+                            if (CanConvertToDateTime(line))
                             {
-                                streamWriter.WriteLine("Result: " + Result);
+                                streamWriter.WriteLine("date: " + line.Split(' ')[0] + " time: "+ line.Split(' ')[1]);
+                                //streamWriter.WriteLine("Valid");
                             }
                             else
                             {
-                                streamWriter.WriteLine("Formatting error, please make sure to provide whole numbers and in this format 'Add 5 5'");
+                                //streamWriter.WriteLine("Formatting error, please make sure to provide whole numbers and in this format 'Add 5 5'");
+                                streamWriter.WriteLine("Not Valid");
                             }
 
                         }
-                        // Write the line to the server that is read from the client
-
                         streamWriter.Flush();
                     }
                     catch (IOException)
@@ -117,6 +115,20 @@ namespace EchoServer
                     break;
                 default:
                     return false;
+            }
+            return true;
+        }
+
+        public bool CanConvertToDateTime(string streamLine)
+        {
+            DateTime date = new DateTime();
+            try
+            {
+                date = DateTime.ParseExact(streamLine, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                return false;
             }
             return true;
         }
